@@ -1,8 +1,6 @@
 from datetime import datetime  # to pull today's date
-#Cesar
 
 class Birthday:
-
     # Some data for this object: the number of days in each month.
     # For simplicity, we ignore leap years and keep February at 28.
     days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -17,9 +15,12 @@ class Birthday:
         else:
             # In case of out of range month, default to January
             self.__month = 1
-        # At this point we have a legit month value 1-12.
+
+        # At this point we have a legit month value 1–12.
         # Protect day value; use -1 in array to synchronize months
-        if day >= 1 and day <= Birthday.days_in_month[month - 1]:
+        # (quick note to self: use the *validated* month, not the raw arg)
+        max_day = Birthday.days_in_month[self.__month - 1]
+        if day >= 1 and day <= max_day:
             self.__day = day
         else:
             # In case of out of range day, default is 1st of month
@@ -30,7 +31,8 @@ class Birthday:
     def set_day(self, day):
         """Mutator for day. It only changes the day value if the
         passed argument is within a valid range for the given month."""
-        if day > 0 and day <= Birthday.days_in_month[self.__month - 1]:
+        max_day = Birthday.days_in_month[self.__month - 1]
+        if day > 0 and day <= max_day:
             self.__day = day
 
     # end set_day
@@ -50,7 +52,14 @@ class Birthday:
         # subtract from birthday
         # return # of days
         today = datetime.today()
-        # COMPLETE THIS FOR YOUR ASSIGNMENT
+        # use helper we already have from the homework
+        d_t = self.day_in_year(today.month, today.day)
+        d_b = self.day_in_year(self.get_month(), self.get_day())
+        diff = d_b - d_t
+        # if birthday already passed this year, wrap into next year
+        if diff <= 0:
+            diff += 365
+        return diff
 
     def day_in_year(self, month, day):
         """calculates the day number within the year corresponding to a given
@@ -65,7 +74,9 @@ class Birthday:
         return f"[ {self.get_month()}/{self.get_day()} ]"
 
 
-demo = Birthday(6, 29)
-
-print(demo.day_in_year(6, 29))  # d_b
-print(demo.day_in_year(4, 29))  # d_t
+# Keep demo under the main guard so imports don't print
+if __name__ == "__main__":
+    demo = Birthday(6, 29)
+    print(demo.day_in_year(6, 29))  # d_b
+    print(demo.day_in_year(4, 29))  # d_t
+    print("Days until:", demo.days_until())
