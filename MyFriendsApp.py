@@ -1,0 +1,1 @@
+from Friend import Friend
